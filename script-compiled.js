@@ -11,109 +11,151 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Square = function (_React$Component) {
-  _inherits(Square, _React$Component);
+    _inherits(Square, _React$Component);
 
-  function Square() {
-    _classCallCheck(this, Square);
+    function Square() {
+        _classCallCheck(this, Square);
 
-    return _possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
-  }
-
-  _createClass(Square, [{
-    key: "render",
-    value: function render() {
-      return React.createElement("button", { className: "square" });
+        return _possibleConstructorReturn(this, (Square.__proto__ || Object.getPrototypeOf(Square)).apply(this, arguments));
     }
-  }]);
 
-  return Square;
+    _createClass(Square, [{
+        key: "render",
+        value: function render() {
+            var _this2 = this;
+
+            //        console.log(this.props.owners);
+            return React.createElement(
+                "button",
+                { className: "square", onClick: function onClick() {
+                        return _this2.props.handleClick(_this2);
+                    } },
+                this.props.owners[this.props.id]
+            );
+        }
+    }]);
+
+    return Square;
 }(React.Component);
 
 var Board = function (_React$Component2) {
-  _inherits(Board, _React$Component2);
+    _inherits(Board, _React$Component2);
 
-  function Board() {
-    _classCallCheck(this, Board);
+    function Board() {
+        _classCallCheck(this, Board);
 
-    return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
-  }
-
-  _createClass(Board, [{
-    key: "renderSquare",
-    value: function renderSquare(i) {
-      return React.createElement(Square, null);
+        return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
     }
-  }, {
-    key: "render",
-    value: function render() {
-      var status = 'Next player: X';
-      return React.createElement(
-        "div",
-        null,
-        React.createElement(
-          "div",
-          { className: "status" },
-          status
-        ),
-        React.createElement(
-          "div",
-          { className: "board-row" },
-          this.renderSquare(0),
-          this.renderSquare(1),
-          this.renderSquare(2)
-        ),
-        React.createElement(
-          "div",
-          { className: "board-row" },
-          this.renderSquare(3),
-          this.renderSquare(4),
-          this.renderSquare(5)
-        ),
-        React.createElement(
-          "div",
-          { className: "board-row" },
-          this.renderSquare(6),
-          this.renderSquare(7),
-          this.renderSquare(8)
-        )
-      );
-    }
-  }]);
 
-  return Board;
+    _createClass(Board, [{
+        key: "renderSquare",
+        value: function renderSquare(i) {
+            return React.createElement(Square, { id: i, handleClick: this.props.handleClick, owners: this.props.owners });
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            var status = 'Next player: ' + this.props.nextPlayer;
+            return React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "div",
+                    { className: "status" },
+                    status
+                ),
+                React.createElement(
+                    "div",
+                    { className: "board-row" },
+                    this.renderSquare(0),
+                    this.renderSquare(1),
+                    this.renderSquare(2)
+                ),
+                React.createElement(
+                    "div",
+                    { className: "board-row" },
+                    this.renderSquare(3),
+                    this.renderSquare(4),
+                    this.renderSquare(5)
+                ),
+                React.createElement(
+                    "div",
+                    { className: "board-row" },
+                    this.renderSquare(6),
+                    this.renderSquare(7),
+                    this.renderSquare(8)
+                )
+            );
+        }
+    }]);
+
+    return Board;
 }(React.Component);
 
 var Game = function (_React$Component3) {
-  _inherits(Game, _React$Component3);
+    _inherits(Game, _React$Component3);
 
-  function Game() {
-    _classCallCheck(this, Game);
+    function Game(props) {
+        _classCallCheck(this, Game);
 
-    return _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).apply(this, arguments));
-  }
+        var _this4 = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-  _createClass(Game, [{
-    key: "render",
-    value: function render() {
-      return React.createElement(
-        "div",
-        { className: "game" },
-        React.createElement(
-          "div",
-          { className: "game-board" },
-          React.createElement(Board, null)
-        ),
-        React.createElement(
-          "div",
-          { className: "game-info" },
-          React.createElement("div", null),
-          React.createElement("ol", null)
-        )
-      );
+        _this4.state = {
+            nextPlayer: "X",
+            owners: ['', '', '', '', '', '', '', '', ''],
+            clickCount: 0
+        };
+        _this4.handleClick = _this4.handleClick.bind(_this4);
+        return _this4;
     }
-  }]);
 
-  return Game;
+    _createClass(Game, [{
+        key: "handleClick",
+        value: function handleClick(square) {
+            var _this5 = this;
+
+            if (this.state.owners[square.props.id] !== '') {
+                return;
+            }
+            this.setState(function (prevState, props) {
+                var prevPlayer = prevState.nextPlayer;
+                var nextPlayer = prevPlayer === "X" ? "O" : "X";
+                var arr = prevState.owners;
+                arr[square.props.id] = prevPlayer;
+                return { nextPlayer: nextPlayer, owners: arr, clickCount: prevState.clickCount + 1 };
+            }, function () {
+                var winner = calculateWinner(_this5.state.owners);
+                if (winner) {
+                    alert(winner + " has won!");
+                } else {
+                    if (_this5.state.clickCount === 9) {
+                        alert("You suck!!");
+                    }
+                }
+            });
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            return React.createElement(
+                "div",
+                { className: "game" },
+                React.createElement(
+                    "div",
+                    { className: "game-board" },
+                    React.createElement(Board, { nextPlayer: this.state.nextPlayer, handleClick: this.handleClick, owners: this.state.owners })
+                ),
+                React.createElement(
+                    "div",
+                    { className: "game-info" },
+                    React.createElement("div", null),
+                    React.createElement("ol", null)
+                )
+            );
+        }
+    }]);
+
+    return Game;
 }(React.Component);
 
 // ========================================
@@ -121,16 +163,16 @@ var Game = function (_React$Component3) {
 ReactDOM.render(React.createElement(Game, null), document.getElementById('root'));
 
 function calculateWinner(squares) {
-  var lines = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-  for (var i = 0; i < lines.length; i++) {
-    var _lines$i = _slicedToArray(lines[i], 3),
-        a = _lines$i[0],
-        b = _lines$i[1],
-        c = _lines$i[2];
+    var lines = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+    for (var i = 0; i < lines.length; i++) {
+        var _lines$i = _slicedToArray(lines[i], 3),
+            a = _lines$i[0],
+            b = _lines$i[1],
+            c = _lines$i[2];
 
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a];
+        }
     }
-  }
-  return null;
+    return null;
 }
