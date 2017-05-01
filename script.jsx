@@ -56,15 +56,6 @@ class Game extends React.Component {
             let arr = prevState.owners;
             arr[square.props.id] = prevPlayer;
             return {nextPlayer : nextPlayer, owners : arr, clickCount : prevState.clickCount + 1};
-        }, () => {
-            let winner = calculateWinner(this.state.owners);
-            if (winner) {
-                alert(winner + " has won!");
-            } else {
-                if (this.state.clickCount === 9) {
-                    alert("You suck!!");
-                }
-            }
         });
     }
     render() {
@@ -79,6 +70,18 @@ class Game extends React.Component {
                 </div>
             </div>
         );
+    }
+    componentDidUpdate() {
+        setTimeout(() => {
+        let winner = calculateWinner(this.state.owners);
+        if (winner) {
+            alert(winner + " has won!");
+        } else {
+            if (this.state.clickCount === 9) {
+                alert("You suck!!");
+            }
+        }
+    }, 0);
     }
 }
 

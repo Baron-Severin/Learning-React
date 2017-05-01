@@ -112,8 +112,6 @@ var Game = function (_React$Component3) {
     _createClass(Game, [{
         key: "handleClick",
         value: function handleClick(square) {
-            var _this5 = this;
-
             if (this.state.owners[square.props.id] !== '') {
                 return;
             }
@@ -123,15 +121,6 @@ var Game = function (_React$Component3) {
                 var arr = prevState.owners;
                 arr[square.props.id] = prevPlayer;
                 return { nextPlayer: nextPlayer, owners: arr, clickCount: prevState.clickCount + 1 };
-            }, function () {
-                var winner = calculateWinner(_this5.state.owners);
-                if (winner) {
-                    alert(winner + " has won!");
-                } else {
-                    if (_this5.state.clickCount === 9) {
-                        alert("You suck!!");
-                    }
-                }
             });
         }
     }, {
@@ -152,6 +141,22 @@ var Game = function (_React$Component3) {
                     React.createElement("ol", null)
                 )
             );
+        }
+    }, {
+        key: "componentDidUpdate",
+        value: function componentDidUpdate() {
+            var _this5 = this;
+
+            setTimeout(function () {
+                var winner = calculateWinner(_this5.state.owners);
+                if (winner) {
+                    alert(winner + " has won!");
+                } else {
+                    if (_this5.state.clickCount === 9) {
+                        alert("You suck!!");
+                    }
+                }
+            }, 0);
         }
     }]);
 
